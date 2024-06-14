@@ -1,0 +1,80 @@
+#include <iostream>
+#include <cmath>
+#include <string>
+#include <sstream>
+
+// Function to perform basic arithmetic operations
+double calculate(double num1, double num2, char op) {
+    switch (op) {
+        case '+':
+            return num1 + num2;
+        case '-':
+            return num1 - num2;
+        case '*':
+            return num1 * num2;
+        case '/':
+            if (num2 != 0)
+                return num1 / num2;
+            else
+                throw std::invalid_argument("Division by zero!");
+        default:
+            throw std::invalid_argument("Invalid operator!");
+    }
+}
+
+// Function to perform scientific calculations
+double calculateScientific(const std::string& func, double num) {
+    if (func == "sqrt")
+        return sqrt(num);
+    else if (func == "cbrt")
+        return cbrt(num);
+    else if (func == "pow2")
+        return pow(num, 2);
+    else if (func == "pow3")
+        return pow(num, 3);
+    else if (func == "exp")
+        return exp(num);
+    else if (func == "log")
+        return log(num);
+    else if (func == "log10")
+        return log10(num);
+    else
+        throw std::invalid_argument("Invalid scientific function!");
+}
+
+int main() {
+    std::string input;
+    std::cout << "Enter an expression (e.g., 5 + 3, sqrt(16), log(100)): ";
+    std::getline(std::cin, input);
+
+    std::istringstream iss(input);
+    double num1, num2;
+    char op;
+    std::string func;
+    iss >> num1;
+
+    // Check if the input contains a scientific function
+    if (iss >> func) {
+        if (func == "sqrt" || func == "cbrt" || func == "pow2" || func == "pow3" || func == "exp" || func == "log" || func == "log10") {
+            if (!(iss >> num2))
+                throw std::invalid_argument("Invalid input format!");
+            std::cout << func << "(" << num2 << ") = " << calculateScientific(func, num2) << std::endl;
+            return 0;
+        } else {
+            throw std::invalid_argument("Invalid input format!");
+        }
+    }
+
+    // Otherwise, assume it's a basic arithmetic operation
+    if (!(iss >> op >> num2))
+        throw std::invalid_argument("Invalid input format!");
+
+    try {
+        double result = calculate(num1, num2, op);
+        std::cout << num1 << " " << op << " " << num2 << " = " << result << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+
+    return 0;
+}
